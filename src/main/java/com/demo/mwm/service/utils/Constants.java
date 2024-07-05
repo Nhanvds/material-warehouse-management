@@ -8,6 +8,8 @@ public class Constants {
 
     public interface Paging{
         Integer PAGE_SIZE_ZERO = 0;
+        String PAGE_SIZE_DEFAULT = "0";
+        String PAGE_NUMBER_DEFAULT = "0";
         String ASC = "ASC";
         String DESC = "DESC";
     }

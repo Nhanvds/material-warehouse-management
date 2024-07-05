@@ -6,10 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.stereotype.Component;
 
-
-@Component
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface IMaterialEntityMapper extends IMapperEntity<MaterialDto, MaterialEntity> {
 

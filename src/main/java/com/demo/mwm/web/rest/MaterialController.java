@@ -102,9 +102,9 @@ public class MaterialController {
     @GetMapping("/get-list")
     public PageResponse<?> getMaterialList(
             @Parameter(description = "Page number for pagination, default is 0. If 0, returns all materials.")
-            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = Constants.Paging.PAGE_NUMBER_DEFAULT) Integer page,
             @Parameter(description = "Page size for pagination, default is 0. If 0, returns all materials.")
-            @RequestParam(defaultValue = "0") Integer size,
+            @RequestParam(defaultValue = Constants.Paging.PAGE_SIZE_DEFAULT) Integer size,
             @Parameter(description = "Property to sort by, optional.")
             @RequestParam(required = false) String sortProperty,
             @Parameter(description = "Order of sorting, either 'asc' or 'desc', optional.")
