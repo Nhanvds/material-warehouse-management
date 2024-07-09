@@ -1,4 +1,4 @@
-package com.demo.mwm.service.utils;
+package com.demo.mwm.utils;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,10 @@
-package com.demo.mwm.domain;
+package com.demo.mwm.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Entity class representing a supplier in the system.
+ */
 @Entity
 @Table(name = "suppliers")
 public class SupplierEntity extends AbstractAuditingEntity<Integer> {
@@ -33,10 +36,6 @@ public class SupplierEntity extends AbstractAuditingEntity<Integer> {
     @Override
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getSupplierCode() {

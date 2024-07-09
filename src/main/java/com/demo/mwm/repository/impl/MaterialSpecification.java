@@ -1,7 +1,7 @@
-package com.demo.mwm.repository.specification;
+package com.demo.mwm.repository.impl;
 
-import com.demo.mwm.service.utils.Constants;
-import com.demo.mwm.domain.MaterialEntity;
+import com.demo.mwm.utils.Constants;
+import com.demo.mwm.entity.MaterialEntity;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,7 +12,7 @@ public class MaterialSpecification {
         return (root, query, criteriaBuilder) ->
                 active == null
                         ? criteriaBuilder.conjunction()
-                        : criteriaBuilder.equal(root.get("isActive"),active);
+                        : criteriaBuilder.equal(root.get("isActive"), active);
     }
 
     public static Specification<MaterialEntity> hasMaterialNameLike(String materialName) {

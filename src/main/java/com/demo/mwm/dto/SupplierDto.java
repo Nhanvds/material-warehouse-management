@@ -1,18 +1,21 @@
-package com.demo.mwm.service.dto;
+package com.demo.mwm.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Data Transfer Object (DTO) for Supplier.
+ */
 public class SupplierDto {
 
     private Integer id;
 
-    @NotBlank(message = "Material code can not be blank")
+    @NotBlank(message = "valid.supplier.code.not.blank")
     private String supplierCode;
 
-    @NotBlank(message = "Material name can not be blank")
+    @NotBlank(message = "valid.supplier.name.not.blank")
     private String supplierName;
 
     private String supplierAddress;
@@ -20,8 +23,6 @@ public class SupplierDto {
     private String supplierPhoneNumber;
 
     private String supplierNote;
-
-    private List<MaterialDto> materialList;
 
     private Instant updatedAt;
 
@@ -75,13 +76,6 @@ public class SupplierDto {
         this.supplierNote = supplierNote;
     }
 
-    public List<MaterialDto> getMaterialList() {
-        return materialList;
-    }
-
-    public void setMaterialList(List<MaterialDto> materialList) {
-        this.materialList = materialList;
-    }
 
     public Instant getUpdatedAt() {
         return updatedAt;

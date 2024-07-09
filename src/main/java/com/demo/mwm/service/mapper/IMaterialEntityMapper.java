@@ -1,7 +1,7 @@
 package com.demo.mwm.service.mapper;
 
-import com.demo.mwm.domain.MaterialEntity;
-import com.demo.mwm.service.dto.MaterialDto;
+import com.demo.mwm.entity.MaterialEntity;
+import com.demo.mwm.dto.MaterialDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

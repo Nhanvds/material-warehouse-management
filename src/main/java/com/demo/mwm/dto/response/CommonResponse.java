@@ -1,15 +1,25 @@
-package com.demo.mwm.service.dto.response;
+package com.demo.mwm.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Common response structure")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommonResponse<T> {
+    @Schema(description = "Indicates if the request was successful", example = "true")
     private Boolean success;
+
+    @Schema(description = "Detailed message about the response", example = "Operation completed successfully")
     private String message;
+
+    @Schema(description = "Response code indicating the result of the operation", example = "200")
     private Integer responseCode;
+
+    @Schema(description = "The actual data returned in the response")
     private T data;
 
-    public CommonResponse() {}
+    public CommonResponse() {
+    }
 
     public CommonResponse<T> success() {
         this.success = true;
@@ -52,7 +62,7 @@ public class CommonResponse<T> {
         return data;
     }
 
-    public void setData(T data){
+    public void setData(T data) {
         this.data = data;
     }
 }

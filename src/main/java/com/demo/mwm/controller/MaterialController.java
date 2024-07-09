@@ -1,16 +1,18 @@
-package com.demo.mwm.web.rest;
+package com.demo.mwm.controller;
 
+import com.demo.mwm.config.Translator;
 import com.demo.mwm.service.IMaterialService;
-import com.demo.mwm.service.dto.MaterialDto;
-import com.demo.mwm.service.dto.response.CommonResponse;
-import com.demo.mwm.service.dto.response.PageResponse;
-import com.demo.mwm.service.utils.Constants;
+import com.demo.mwm.dto.MaterialDto;
+import com.demo.mwm.dto.response.CommonResponse;
+import com.demo.mwm.dto.response.PageResponse;
+import com.demo.mwm.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,41 +28,101 @@ public class MaterialController {
         this.materialService = materialService;
     }
 
+
+    @Operation(description = "create a new Material",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Created material successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = CommonResponse.class,
+                                            description = "Has data: A MaterialDto object representing the created material.")))
+            })
+    /**
+     * create a new Material
+     *
+     * @param materialDto An object containing the new material information.
+     * @return CommonResponse has data: A MaterialDto object representing the created material.
+     */
     @PostMapping("/save")
     public CommonResponse<?> createMaterial(
-            @Valid @RequestBody MaterialDto materialDto) {
-        materialService.createMaterial(materialDto);
+            @Parameter(description = "An object containing the new material information.")
+            @Valid @RequestBody MaterialDto materialDto
+            ) {
         return new CommonResponse<>()
                 .success()
+                .data(materialService.createMaterial(materialDto))
                 .responseCode(HttpStatus.CREATED.value())
-                .message("Create material successfully");
+                .message(Translator.toLocale("success.material.create"));
     }
 
+    @Operation(description = "Update a material, update materialCode, materialName, materialPrice, materialQuantity, materialNote, supplierId",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Delete material successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = CommonResponse.class,
+                                            description = "Has data: A MaterialDto object representing the updated material.")))
+            })
+    /**
+     * update a material, update materialCode,materialName,materialPrice,materialQuantity,materialNote,supplierId
+     *
+     * @param id          The ID of the material to update.
+     * @param materialDto An object containing the updated material information.
+     * @return CommonResponse
+     */
     @PutMapping("/{id}/update")
     public CommonResponse<?> updateMaterial(
+            @Parameter(description = "The ID of the material to update")
             @PathVariable Integer id,
-            @Valid @RequestBody MaterialDto materialDto
+            @Parameter(description = "An object containing the updated material information")
+            @Valid @RequestBody MaterialDto materialDto,
+            HttpServletRequest request
     ) {
-        materialService.updateMaterial(id, materialDto);
         return new CommonResponse<>()
                 .success()
+                .data(materialService.updateMaterial(id, materialDto))
                 .responseCode(HttpStatus.OK.value())
-                .message("Update material successfully");
+                .message(Translator.toLocale("success.material.update"));
+
     }
 
+
+    @Operation(description = "Deletes a material by marking it inactive",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Delete material successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = CommonResponse.class)))
+            })
+    /**
+     * Deletes a material by marking it inactive.
+     * @param id The ID of the material to delete.
+     * @return CommonResponse
+     */
     @DeleteMapping("/{id}/delete")
     public CommonResponse<?> deleteMaterial(
+            @Parameter(description = "The ID of the material to delete")
             @PathVariable Integer id
     ) {
         materialService.deleteMaterial(id);
         return new CommonResponse<>()
                 .success()
                 .responseCode(HttpStatus.OK.value())
-                .message("Delete material successfully");
+                .message(Translator.toLocale("success.material.delete"));
     }
 
+
+    @Operation(description = "Retrieves the details of a material by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Get material successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = CommonResponse.class,
+                                            description = "has data: A MaterialDto object containing the details of the material and its associated supplier.")))
+            })
     @GetMapping("/{id}/detail")
     public CommonResponse<?> getDetailMaterial(
+            @Parameter(description = "The ID of the material to retrieve")
             @PathVariable Integer id
     ) {
         return new CommonResponse<>()
@@ -75,6 +137,7 @@ public class MaterialController {
                     @ApiResponse(responseCode = "200",
                             description = "Get material page successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = PageResponse.class),
                                     examples = @ExampleObject(name = "",
                                             description = "success=true when Get material page successfully",
                                             value = """

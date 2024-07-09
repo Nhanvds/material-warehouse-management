@@ -1,4 +1,4 @@
-package com.demo.mwm.service.dto;
+package com.demo.mwm.dto;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -7,25 +7,28 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 
+/**
+ * Data Transfer Object (DTO) for Material.
+ */
 public class MaterialDto {
 
     private Integer id;
 
-    @NotBlank(message = "Material code can not be blank")
+    @NotBlank(message = "valid.material.code.not.blank")
     private String materialCode;
 
-    @NotBlank(message = "Material name can not be blank")
+    @NotBlank(message = "valid.material.name.not.blank")
     private String materialName;
 
-    @NotNull(message = "Material price can not be blank")
+    @NotNull(message = "valid.material.price.not.null")
     private Double materialPrice;
 
-    @Digits(integer = 5, fraction = 0, message = "Quantity must be integer")
+    @Digits(integer = 5, fraction = 0, message = "valid.material.quantity.invalid")
     private Integer materialQuantity;
 
     private String materialNote;
 
-    @NotNull(message = "Supplier id can not be null")
+    @NotNull(message = "valid.supplier.id.not.null")
     private Integer supplierId;
 
     private SupplierDto supplier;

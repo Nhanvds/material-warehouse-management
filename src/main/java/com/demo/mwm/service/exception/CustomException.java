@@ -2,18 +2,24 @@ package com.demo.mwm.service.exception;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Custom exception class
+ */
 public class CustomException extends RuntimeException {
-    private String errorCode;
     private HttpStatus errorStatus;
+    private String[] args;
 
-    public CustomException(String message, HttpStatus errorStatus) {
+    /**
+     * Constructs a new CustomException with the specified HTTP status, message, and message arguments.
+     *
+     * @param errorStatus The HTTP status associated with the exception.
+     * @param message     The detail message.
+     * @param args        The array of arguments for multi-language messages.
+     */
+    public CustomException(HttpStatus errorStatus, String message, String... args) {
         super(message);
+        this.args = args;
         this.errorStatus = errorStatus;
-    }
-
-    public CustomException errorCode(String errorCode) {
-        this.errorCode = errorCode;
-        return this;
     }
 
     public CustomException errorStatus(HttpStatus errorStatus) {
@@ -21,11 +27,15 @@ public class CustomException extends RuntimeException {
         return this;
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
     public HttpStatus getErrorStatus() {
         return errorStatus;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
     }
 }

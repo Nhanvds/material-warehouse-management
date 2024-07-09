@@ -1,9 +1,9 @@
 package com.demo.mwm.service;
 
 
-import com.demo.mwm.service.dto.MaterialDto;
+import com.demo.mwm.dto.MaterialDto;
 
-import com.demo.mwm.service.dto.response.PageResponse;
+import com.demo.mwm.dto.response.PageResponse;
 
 public interface IMaterialService {
 

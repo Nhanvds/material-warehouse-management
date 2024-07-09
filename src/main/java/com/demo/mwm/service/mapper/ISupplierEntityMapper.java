@@ -1,7 +1,7 @@
 package com.demo.mwm.service.mapper;
 
-import com.demo.mwm.domain.SupplierEntity;
-import com.demo.mwm.service.dto.SupplierDto;
+import com.demo.mwm.entity.SupplierEntity;
+import com.demo.mwm.dto.SupplierDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

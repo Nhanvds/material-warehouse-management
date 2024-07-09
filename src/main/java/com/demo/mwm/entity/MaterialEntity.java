@@ -1,7 +1,10 @@
-package com.demo.mwm.domain;
+package com.demo.mwm.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Entity class representing a material in the system.
+ */
 @Entity
 @Table(name = "materials")
 public class MaterialEntity extends AbstractAuditingEntity<Integer> {
@@ -35,10 +38,6 @@ public class MaterialEntity extends AbstractAuditingEntity<Integer> {
     @Override
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getMaterialCode() {
