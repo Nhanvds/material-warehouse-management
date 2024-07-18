@@ -4,6 +4,10 @@ import com.demo.mwm.dto.TransactionDto;
 import com.demo.mwm.service.ITransactionService;
 import com.demo.mwm.utils.AESUtils;
 import com.demo.mwm.utils.RSAUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,16 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TransactionController {
     private final ITransactionService transactionService;
-    private final AESUtils aesUtils;
     private final RSAUtils rsaUtils;
 
-    public TransactionController(ITransactionService transactionService, AESUtils aesUtils, RSAUtils rsaUtils) {
+    public TransactionController(ITransactionService transactionService, RSAUtils rsaUtils) {
         this.transactionService = transactionService;
-        this.aesUtils = aesUtils;
         this.rsaUtils = rsaUtils;
     }
 
-
+    @Operation(description = "Create a new Transaction",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Created transaction successfully. Return transaction created successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "500", description = "Server error"),
+            })
     @PostMapping("/save")
     public ResponseEntity<TransactionDto> createTransaction(
             @RequestParam("transactionId") String transactionId,

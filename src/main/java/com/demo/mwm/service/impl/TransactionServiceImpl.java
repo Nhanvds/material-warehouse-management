@@ -32,6 +32,18 @@ public class TransactionServiceImpl implements ITransactionService {
         this.rsaUtils = rsaUtils;
     }
 
+    /**
+     * Creates a new transaction with the provided details.
+     *
+     * @param transactionId The ID of the transaction, in encrypted format.
+     * @param account The account related to the transaction, in encrypted format.
+     * @param indebted The indebted amount, in encrypted format.
+     * @param have The amount that is available or possessed, in encrypted format.
+     * @param time The time of the transaction, in encrypted format and expected to be in a specific date format YYYY-MM-DD.
+     * @return The created TransactionDto object containing the transaction details.
+     * @throws CustomException if any of the provided parameters (transactionId, account, indebted, have, or time) is null.
+     *                         Also throws CustomException if there is an error during decryption, parsing the time, or parsing the double values.
+     */
     @Override
     public TransactionDto createTransaction(String transactionId,
                                             String account,

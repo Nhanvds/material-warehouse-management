@@ -20,6 +20,12 @@ public class AESUtils {
         this.gcmParameterSpec = gcmParameterSpec;
     }
 
+    /**
+     * Encrypt the provided encrypted data using AES/GCM/NoPadding.
+     * @param data: Data needs to be encrypted
+     * @return Data was encrypted, or an empty string if an error occurs during decryption.
+     * @throws IllegalArgumentException if the provided encryptedData is null.
+     */
     public String encrypt(String data) {
         try {
             if (data == null) {
@@ -35,6 +41,13 @@ public class AESUtils {
         }
     }
 
+    /**
+     * Decrypts the provided encrypted data using AES/GCM/NoPadding.
+     *
+     * @param encryptedData Data that needs to be decrypted, in Base64-encoded format.
+     * @return The decrypted data as a plain text string, or an empty string if an error occurs during decryption.
+     * @throws IllegalArgumentException if the provided encryptedData is null.
+     */
     public String decrypt(String encryptedData) {
         try {
             if (encryptedData == null) {

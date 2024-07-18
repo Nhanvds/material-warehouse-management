@@ -40,14 +40,14 @@ public class SupplierController {
 
     @Operation(description = "Create a new supplier",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Created supplier successfully. Return message updated successfully"),
+                    @ApiResponse(responseCode = "200", description = "Created supplier successfully. A SupplierDto object representing the created supplier."),
                     @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
             })
     /**
      * create a new supplier
      * @param supplierDto An object containing the new supplier information.
-     * @return CommonResponse.data: A SupplierDto object representing the created supplier.
+     * @return A SupplierDto object representing the created supplier.
      */
     @PostMapping("save")
     public ResponseEntity<SupplierDto> createSupplier(
@@ -79,7 +79,7 @@ public class SupplierController {
      * update supplierName,supplierCode,supplierAddress,supplierPhoneNumber,supplierNote
      * @param id          The ID of the supplier to update.
      * @param supplierDto An object containing the updated supplier information.
-     * @return CommonResponse.data: A SupplierDto object representing the updated supplier.
+     * @return A SupplierDto object representing the updated supplier.
      */
     @PutMapping("/{id}/update")
     public ResponseEntity<SupplierDto> updateSupplier(
@@ -101,7 +101,7 @@ public class SupplierController {
     /**
      * Deletes a supplier by marking it inactive.
      * @param id The ID of the supplier to delete.
-     * @return CommonResponse
+     * @return Message
      */
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteSupplier(
@@ -141,7 +141,7 @@ public class SupplierController {
     /**
      * get all supplier
      *
-     * @return CommonResponse.data: List<SupplierDto>
+     * @return List<SupplierDto>
      */
     @GetMapping("/all")
     public ResponseEntity<List<SupplierDto>> getAllSupplier() {

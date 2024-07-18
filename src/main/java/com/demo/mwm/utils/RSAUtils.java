@@ -19,6 +19,13 @@ public class RSAUtils {
         this.keyPair = keyPair;
     }
 
+    /**
+     * Encrypts the provided data using RSA encryption.
+     *
+     * @param data The plain text data that needs to be encrypted.
+     * @return The encrypted data as a Base64-encoded string, or an empty string if an error occurs during encryption.
+     * @throws IllegalArgumentException if the provided data is null.
+     */
     public String encrypt(String data) {
         try{
             if(data == null){
@@ -33,6 +40,14 @@ public class RSAUtils {
             return Constants.EMPTY_STRING;
         }
     }
+
+    /**
+     * Decrypts the provided encrypted data using RSA decryption.
+     *
+     * @param encryptedData The encrypted data that needs to be decrypted, in Base64-encoded format.
+     * @return The decrypted data as a plain text string, or an empty string if an error occurs during decryption.
+     * @throws IllegalArgumentException if the provided encryptedData is null.
+     */
     public String decrypt(String encryptedData)  {
         try {
             if(encryptedData == null){
