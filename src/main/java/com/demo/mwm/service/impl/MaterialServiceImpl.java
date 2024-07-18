@@ -1,14 +1,13 @@
 package com.demo.mwm.service.impl;
 
+import com.demo.mwm.dto.PageDto;
 import com.demo.mwm.entity.MaterialEntity;
 import com.demo.mwm.entity.SupplierEntity;
 import com.demo.mwm.repository.IMaterialRepository;
 import com.demo.mwm.repository.ISupplierRepository;
-import com.demo.mwm.repository.impl.MaterialSpecification;
 import com.demo.mwm.service.IMaterialService;
 import com.demo.mwm.dto.MaterialDto;
-import com.demo.mwm.dto.response.PageResponse;
-import com.demo.mwm.service.exception.CustomException;
+import com.demo.mwm.exception.CustomException;
 import com.demo.mwm.service.mapper.IMaterialEntityMapper;
 import com.demo.mwm.service.mapper.ISupplierEntityMapper;
 import com.demo.mwm.utils.Constants;
@@ -18,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class MaterialServiceImpl implements IMaterialService {
@@ -38,35 +39,43 @@ public class MaterialServiceImpl implements IMaterialService {
     }
 
     /**
-     * Retrieves the details of a material by its ID.
+     * Retrieves the details of a material entity by its ID.
+     * Retrieves both the material details and its associated supplier details.
      *
-     * @param id The ID of the material to retrieve.
+     * @param id The ID of the material entity to retrieve.
      * @return A MaterialDto object containing the details of the material and its associated supplier.
-     * @throws CustomException If a material or supplier with the provided IDs is not found or inactive.
+     * @throws CustomException If no active material or supplier with the provided IDs is found.
      */
     @Override
     public MaterialDto getDetailMaterialById(Integer id) {
+        if(Objects.isNull(id)){
+            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+        }
         MaterialEntity materialEntity = materialRepository.findByIdAndIsActiveTrue(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Material not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.material.not.found", String.valueOf(id)));
         MaterialDto materialDto = materialEntityMapper.toDto(materialEntity);
         SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(materialEntity.getSupplierId())
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Supplier not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found", String.valueOf(materialEntity.getSupplierId())));
         materialDto.setSupplier(supplierEntityMapper.toDto(supplierEntity));
         return materialDto;
     }
+
 
     /**
      * Creates a new material.
      *
      * @param materialDto An object containing the new material information.
-     * @return A MaterialDto object representing the created material.
+     * @return The ID of the newly created material entity.
      * @throws CustomException If a supplier with the provided ID is not found or inactive.
      */
     @Override
     public MaterialDto createMaterial(MaterialDto materialDto) {
+        if(Objects.isNull(materialDto)){
+            throw new CustomException(HttpStatus.BAD_REQUEST,"MaterialDto null");
+        }
         MaterialEntity materialEntity = materialEntityMapper.toEntity(materialDto);
         SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(materialDto.getSupplierId())
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Supplier not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found", String.valueOf(materialDto.getSupplierId())));
         materialEntity.setSupplierId(supplierEntity.getId());
         materialRepository.save(materialEntity);
         MaterialDto savedMaterial = materialEntityMapper.toDto(materialEntity);
@@ -86,33 +95,41 @@ public class MaterialServiceImpl implements IMaterialService {
      *
      * @param id          The ID of the material to update.
      * @param materialDto An object containing the updated material information.
-     * @return A MaterialDto object representing the updated material.
+     * @return MaterialDto saved
      * @throws CustomException If a material or supplier with the provided IDs is not found.
      */
     @Override
     public MaterialDto updateMaterial(Integer id, MaterialDto materialDto) {
+        if(Objects.isNull(id)){
+            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+        }
+        if(Objects.isNull(materialDto)){
+            throw new CustomException(HttpStatus.BAD_REQUEST,"MaterialDto null");
+        }
         MaterialEntity materialEntity = materialRepository.findByIdAndIsActiveTrue(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Material not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.material.not.found", String.valueOf(id)));
         materialEntityMapper.updateFromDto(materialEntity, materialDto);
         SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(materialDto.getSupplierId())
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Supplier not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found", String.valueOf(materialDto.getSupplierId())));
         materialEntity.setSupplierId(supplierEntity.getId());
         materialRepository.save(materialEntity);
-        MaterialDto updatedMaterial = materialEntityMapper.toDto(materialEntity);
-        updatedMaterial.setSupplier(supplierEntityMapper.toDto(supplierEntity));
-        return updatedMaterial;
+        MaterialDto updatedMaterialDto = materialEntityMapper.toDto(materialEntity);
+        updatedMaterialDto.setSupplier(supplierEntityMapper.toDto(supplierEntity));
+        return updatedMaterialDto;
     }
 
     /**
      * Deletes a material by marking it inactive.
-     *
      * @param id The ID of the material to delete.
      * @throws CustomException If a material with the provided ID is not found.
      */
     @Override
     public void deleteMaterial(Integer id) {
+        if(Objects.isNull(id)){
+            throw new CustomException(HttpStatus.BAD_REQUEST,"id null");
+        }
         MaterialEntity materialEntity = materialRepository.findByIdAndIsActiveTrue(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Material not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.material.not.found", String.valueOf(id)));
         materialEntity.setActive(false);
         materialRepository.save(materialEntity);
     }
@@ -124,23 +141,20 @@ public class MaterialServiceImpl implements IMaterialService {
      * @param sortOrder:    Order of sorting, either 'asc' or 'desc', optional.
      * @param materialName: Filter materials by name, optional.
      * @param materialCode: Filter materials by code, optional.
-     * @return PageResponse<List < MaterialDto> a paginated list of materials. If page and size are not provided, returns all materials.
+     * @return PageDto < MaterialDto> a paginated list of materials. If page and size are not provided, returns all materials.
      */
     @Override
-    public PageResponse<?> getMaterialList(Integer page, Integer size, String sortProperty, String sortOrder, String materialName, String materialCode) {
+    public PageDto<MaterialDto> getMaterialList(Integer page, Integer size, String sortProperty, String sortOrder, String materialName, String materialCode) {
         Pageable pageable = Utils.getPageable(page, size);
         Specification<MaterialEntity> specification = Specification
-                .where(MaterialSpecification.isActive(Constants.IS_ACTIVE_TRUE)
-                        .and(MaterialSpecification.hasMaterialNameLike(materialName))
-                        .and(MaterialSpecification.hasMaterialCodeLike(materialCode)))
-                .and(MaterialSpecification.sort(sortProperty, sortOrder));
+                .where(IMaterialRepository.isActive(Constants.IS_ACTIVE_TRUE)
+                        .and(IMaterialRepository.hasMaterialNameLike(materialName))
+                        .and(IMaterialRepository.hasMaterialCodeLike(materialCode)))
+                .and(IMaterialRepository.sort(sortProperty, sortOrder));
         Page<MaterialEntity> entityPage = materialRepository.findAll(specification, pageable);
-
-        return new PageResponse<>()
-                .success()
-                .responseCode(HttpStatus.OK.value())
-                .data(entityPage.stream().map(materialEntityMapper::toDto).toList())
-                .dataCount(entityPage.getTotalElements());
-
+        return new PageDto<MaterialDto>()
+                .content(entityPage.stream()
+                        .map(materialEntityMapper::toDto).toList())
+                .totalElements(entityPage.getTotalElements());
     }
 }

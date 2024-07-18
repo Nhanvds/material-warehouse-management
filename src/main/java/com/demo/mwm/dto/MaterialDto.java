@@ -10,7 +10,7 @@ import java.time.Instant;
 /**
  * Data Transfer Object (DTO) for Material.
  */
-public class MaterialDto {
+public class MaterialDto extends AbstractDto{
 
     private Integer id;
 

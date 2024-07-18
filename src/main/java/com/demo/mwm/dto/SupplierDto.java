@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Data Transfer Object (DTO) for Supplier.
  */
-public class SupplierDto {
+public class SupplierDto extends AbstractDto{
 
     private Integer id;
 

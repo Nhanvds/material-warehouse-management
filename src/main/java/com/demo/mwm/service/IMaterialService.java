@@ -3,7 +3,7 @@ package com.demo.mwm.service;
 
 import com.demo.mwm.dto.MaterialDto;
 
-import com.demo.mwm.dto.response.PageResponse;
+import com.demo.mwm.dto.PageDto;
 
 public interface IMaterialService {
 
@@ -15,6 +15,6 @@ public interface IMaterialService {
 
     void deleteMaterial(Integer id);
 
-    PageResponse<?> getMaterialList(Integer page, Integer size, String sortProperty, String sortOrder ,
-                                              String materialName, String materialCode);
+    PageDto<MaterialDto> getMaterialList(Integer page, Integer size, String sortProperty, String sortOrder ,
+                            String materialName, String materialCode);
 }

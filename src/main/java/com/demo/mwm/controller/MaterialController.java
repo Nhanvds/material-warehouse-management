@@ -1,21 +1,21 @@
 package com.demo.mwm.controller;
 
-import com.demo.mwm.config.Translator;
+import com.demo.mwm.component.Translator;
+import com.demo.mwm.dto.PageDto;
+
 import com.demo.mwm.service.IMaterialService;
 import com.demo.mwm.dto.MaterialDto;
-import com.demo.mwm.dto.response.CommonResponse;
-import com.demo.mwm.dto.response.PageResponse;
+
 import com.demo.mwm.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,139 +31,123 @@ public class MaterialController {
 
     @Operation(description = "create a new Material",
             responses = {
-                    @ApiResponse(responseCode = "200",
-                            description = "Created material successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CommonResponse.class,
-                                            description = "Has data: A MaterialDto object representing the created material.")))
+                    @ApiResponse(responseCode = "200", description = "Created material successfully. Return the ID of the newly created material entity."),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+
             })
+
     /**
      * create a new Material
      *
      * @param materialDto An object containing the new material information.
-     * @return CommonResponse has data: A MaterialDto object representing the created material.
+     * @return The ID of the newly created material entity.
      */
     @PostMapping("/save")
-    public CommonResponse<?> createMaterial(
+    public ResponseEntity<MaterialDto> createMaterial(
             @Parameter(description = "An object containing the new material information.")
             @Valid @RequestBody MaterialDto materialDto
-            ) {
-        return new CommonResponse<>()
-                .success()
-                .data(materialService.createMaterial(materialDto))
-                .responseCode(HttpStatus.CREATED.value())
-                .message(Translator.toLocale("success.material.create"));
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(materialService.createMaterial(materialDto));
     }
 
-    @Operation(description = "Update a material, update materialCode, materialName, materialPrice, materialQuantity, materialNote, supplierId",
-            responses = {
-                    @ApiResponse(responseCode = "200",
-                            description = "Delete material successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CommonResponse.class,
-                                            description = "Has data: A MaterialDto object representing the updated material.")))
-            })
+
     /**
-     * update a material, update materialCode,materialName,materialPrice,materialQuantity,materialNote,supplierId
+     * This method allows updating various fields of a material entity, including:
+     * - materialCode
+     * - materialName
+     * - materialPrice
+     * - materialQuantity
+     * - materialNote
+     * - supplierId
      *
      * @param id          The ID of the material to update.
      * @param materialDto An object containing the updated material information.
-     * @return CommonResponse
+     * @return String: message updated successfully
      */
+    @Operation(description = "Update a material, update materialCode, materialName, materialPrice, materialQuantity, materialNote, supplierId",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Updated material successfully. Return message updated successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful,Material or Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "500", description = "Server error"),
+            })
+
     @PutMapping("/{id}/update")
-    public CommonResponse<?> updateMaterial(
+    public ResponseEntity<MaterialDto> updateMaterial(
             @Parameter(description = "The ID of the material to update")
             @PathVariable Integer id,
             @Parameter(description = "An object containing the updated material information")
-            @Valid @RequestBody MaterialDto materialDto,
-            HttpServletRequest request
-    ) {
-        return new CommonResponse<>()
-                .success()
-                .data(materialService.updateMaterial(id, materialDto))
-                .responseCode(HttpStatus.OK.value())
-                .message(Translator.toLocale("success.material.update"));
+            @Valid @RequestBody MaterialDto materialDto) {
+        return ResponseEntity
+                .ok()
+                .body(materialService.updateMaterial(id, materialDto));
 
     }
 
-
-    @Operation(description = "Deletes a material by marking it inactive",
-            responses = {
-                    @ApiResponse(responseCode = "200",
-                            description = "Delete material successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CommonResponse.class)))
-            })
     /**
      * Deletes a material by marking it inactive.
+     *
      * @param id The ID of the material to delete.
      * @return CommonResponse
      */
+    @Operation(description = "Delete a material by marking it inactive",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Delete material successfully."),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "500", description = "Server error"),
+            })
     @DeleteMapping("/{id}/delete")
-    public CommonResponse<?> deleteMaterial(
+    public ResponseEntity<String> deleteMaterial(
             @Parameter(description = "The ID of the material to delete")
             @PathVariable Integer id
     ) {
         materialService.deleteMaterial(id);
-        return new CommonResponse<>()
-                .success()
-                .responseCode(HttpStatus.OK.value())
-                .message(Translator.toLocale("success.material.delete"));
+        return ResponseEntity.ok(Translator.toLocale("success.material.delete"));
     }
 
 
-    @Operation(description = "Retrieves the details of a material by its ID",
+    /**
+     * Retrieves the details of a material entity by its ID.
+     * @param id The ID of the material entity to retrieve.
+     * @return  A MaterialDto object containing the details of the material and its associated supplier.
+     */
+    @Operation(description = "Retrieves the details of a material entity by its ID.",
             responses = {
-                    @ApiResponse(responseCode = "200",
-                            description = "Get material successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CommonResponse.class,
-                                            description = "has data: A MaterialDto object containing the details of the material and its associated supplier.")))
+                    @ApiResponse(responseCode = "200", description = "Get detail material successfully."),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "500", description = "Server error"),
             })
     @GetMapping("/{id}/detail")
-    public CommonResponse<?> getDetailMaterial(
+    public ResponseEntity<MaterialDto> getDetailMaterial(
             @Parameter(description = "The ID of the material to retrieve")
             @PathVariable Integer id
     ) {
-        return new CommonResponse<>()
-                .success()
-                .responseCode(HttpStatus.OK.value())
-                .data(materialService.getDetailMaterialById(id));
+        return ResponseEntity
+                .ok()
+                .body(materialService.getDetailMaterialById(id));
     }
 
-    @Operation(summary = "Retrieves a paginated list of materials.",
-            description = "Retrieves a paginated list of materials. If page and size are not provided, returns all materials.",
+
+    @Operation(description = "Retrieves a paginated list of materials. If page and size are not provided, returns all materials.",
             responses = {
-                    @ApiResponse(responseCode = "200",
-                            description = "Get material page successfully",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PageResponse.class),
-                                    examples = @ExampleObject(name = "",
-                                            description = "success=true when Get material page successfully",
-                                            value = """
-                                                    {
-                                                        "success": true,
-                                                        "responseCode": 200,
-                                                        "data": [
-                                                         {
-                                                                     "id": 1,
-                                                                     "materialCode": "VT001",
-                                                                     "materialName": "Vật tư 001",
-                                                                     "materialPrice": 20000.0,
-                                                                     "materialQuantity": 5,
-                                                                     "materialNote": "Sản phẩm mới",
-                                                                     "supplierId": null,
-                                                                     "supplier": null,
-                                                                     "updatedAt": "2024-07-02T17:16:27.242944Z",
-                                                                     "createdAt": "2024-07-02T16:54:06.684231Z"
-                                                                 }
-                                                        ],
-                                                        "dataCount": 1
-                                                    }
-                                                    """)))
+                    @ApiResponse(responseCode = "200", description = "successfully."),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "500", description = "Server error"),
             })
+    /**
+     * @param page          :Page number for pagination, default is 0. If 0, returns all materials.
+     * @param size          :Page size for pagination, default is 0. If 0, returns all materials.
+     * @param sortProperty: Property to sort by, optional.
+     * @param sortOrder:    Order of sorting, either 'asc' or 'desc', optional.
+     * @param materialName: Filter materials by name, optional.
+     * @param materialCode: Filter materials by code, optional.
+     * @return PageDto < MaterialDto> a paginated list of materials. If page and size are not provided, returns all materials.
+     */
     @GetMapping("/get-list")
-    public PageResponse<?> getMaterialList(
+    public ResponseEntity<PageDto<MaterialDto>> getMaterialList(
             @Parameter(description = "Page number for pagination, default is 0. If 0, returns all materials.")
             @RequestParam(defaultValue = Constants.Paging.PAGE_NUMBER_DEFAULT) Integer page,
             @Parameter(description = "Page size for pagination, default is 0. If 0, returns all materials.")
@@ -177,7 +161,8 @@ public class MaterialController {
             @Parameter(description = "Filter materials by code, optional.")
             @RequestParam(required = false) String materialCode
     ) {
-        return materialService.getMaterialList(page, size, sortProperty, sortOrder, materialName, materialCode);
+        return ResponseEntity.ok()
+                .body(materialService.getMaterialList(page, size, sortProperty, sortOrder, materialName, materialCode));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.demo.mwm.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -16,6 +17,7 @@ import java.time.Instant;
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties(value = { "createdAt", "updatedAt" }, allowGetters = true)
 public abstract class AbstractAuditingEntity<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;

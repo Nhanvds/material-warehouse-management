@@ -1,6 +1,5 @@
-package com.demo.mwm.config;
+package com.demo.mwm.component;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;

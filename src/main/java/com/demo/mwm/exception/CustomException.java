@@ -1,4 +1,4 @@
-package com.demo.mwm.service.exception;
+package com.demo.mwm.exception;
 
 import org.springframework.http.HttpStatus;
 
@@ -21,7 +21,10 @@ public class CustomException extends RuntimeException {
         this.args = args;
         this.errorStatus = errorStatus;
     }
-
+    public CustomException(String msg){
+        super(msg);
+        this.errorStatus = HttpStatus.BAD_REQUEST;
+    }
     public CustomException errorStatus(HttpStatus errorStatus) {
         this.errorStatus = errorStatus;
         return this;

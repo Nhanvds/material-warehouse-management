@@ -1,35 +1,36 @@
 package com.demo.mwm.entity;
 
+import com.demo.mwm.utils.Constants;
 import jakarta.persistence.*;
 
 /**
  * Entity class representing a supplier in the system.
  */
 @Entity
-@Table(name = "suppliers")
+@Table(name = Constants.SupplierColumn.TABLE_NAME)
 public class SupplierEntity extends AbstractAuditingEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = Constants.SupplierColumn.ID)
     private Integer id;
 
-    @Column(name = "supplier_code", unique = true)
+    @Column(name = Constants.SupplierColumn.SUPPLIER_CODE, unique = true)
     private String supplierCode;
 
-    @Column(name = "supplier_name")
+    @Column(name = Constants.SupplierColumn.SUPPLIER_NAME)
     private String supplierName;
 
-    @Column(name = "supplier_address")
+    @Column(name = Constants.SupplierColumn.SUPPLIER_ADDRESS)
     private String supplierAddress;
 
-    @Column(name = "supplier_phone_number")
+    @Column(name = Constants.SupplierColumn.SUPPLIER_PHONE_NUMBER)
     private String supplierPhoneNumber;
 
-    @Column(name = "supplier_note")
+    @Column(name = Constants.SupplierColumn.SUPPLIER_NOTE)
     private String supplierNote;
 
-    @Column(name = "is_active")
+    @Column(name = Constants.SupplierColumn.IS_ACTIVE)
     private Boolean isActive = true;
 
 

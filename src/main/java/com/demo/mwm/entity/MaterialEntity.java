@@ -1,38 +1,49 @@
 package com.demo.mwm.entity;
 
+import com.demo.mwm.utils.Constants;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Entity class representing a material in the system.
  */
 @Entity
-@Table(name = "materials")
+@Table(name = Constants.MaterialColumn.TABLE_NAME)
 public class MaterialEntity extends AbstractAuditingEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = Constants.MaterialColumn.ID)
     private Integer id;
 
-    @Column(name = "material_code", unique = true)
+    @Size(max = 50, message = "Material code must be at most 50 characters long")
+    @NotBlank(message = "valid.material.code.not.blank")
+    @Column(name = Constants.MaterialColumn.MATERIAL_CODE, unique = true)
     private String materialCode;
 
-    @Column(name = "material_name")
+    @Size(max = 50, message = "Material name must be at most 50 characters long")    @NotBlank(message = "valid.material.name.not.blank")
+    @Column(name = Constants.MaterialColumn.MATERIAL_NAME)
     private String materialName;
 
-    @Column(name = "material_price")
+    @NotNull(message = "valid.material.price.not.null")
+    @Column(name = Constants.MaterialColumn.MATERIAL_PRICE)
     private Double materialPrice;
 
-    @Column(name = "material_quantity")
+    @NotNull(message = "valid.material.quantity.not.null")
+    @Column(name = Constants.MaterialColumn.MATERIAL_QUANTITY)
     private Integer materialQuantity;
 
-    @Column(name = "material_note")
+    @Size(max = 500, message = "Material note must be at most 500 characters long")
+    @Column(name = Constants.MaterialColumn.MATERIAL_NOTE)
     private String materialNote;
 
-    @Column(name = "supplier_id")
+    @NotNull(message = "valid.supplier.id.not.null")
+    @Column(name = Constants.MaterialColumn.SUPPLIER_ID)
     private Integer supplierId;
 
-    @Column(name = "is_active")
+    @Column(name = Constants.MaterialColumn.IS_ACTIVE)
     private Boolean isActive = true;
 
     @Override
