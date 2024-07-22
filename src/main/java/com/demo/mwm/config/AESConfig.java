@@ -3,6 +3,7 @@ package com.demo.mwm.config;
 import com.demo.mwm.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -12,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 @Configuration
+@Scope(value = "singleton")
 public class AESConfig {
 
     @Bean

@@ -11,6 +11,7 @@ import com.demo.mwm.utils.Constants;
 import com.demo.mwm.utils.RSAUtils;
 import org.mapstruct.ap.shaded.freemarker.template.utility.NullArgumentException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,10 +37,10 @@ public class TransactionServiceImpl implements ITransactionService {
      * Creates a new transaction with the provided details.
      *
      * @param transactionId The ID of the transaction, in encrypted format.
-     * @param account The account related to the transaction, in encrypted format.
-     * @param indebted The indebted amount, in encrypted format.
-     * @param have The amount that is available or possessed, in encrypted format.
-     * @param time The time of the transaction, in encrypted format and expected to be in a specific date format YYYY-MM-DD.
+     * @param account       The account related to the transaction, in encrypted format.
+     * @param indebted      The indebted amount, in encrypted format.
+     * @param have          The amount that is available or possessed, in encrypted format.
+     * @param time          The time of the transaction, in encrypted format and expected to be in a specific date format YYYY-MM-DD.
      * @return The created TransactionDto object containing the transaction details.
      * @throws CustomException if any of the provided parameters (transactionId, account, indebted, have, or time) is null.
      *                         Also throws CustomException if there is an error during decryption, parsing the time, or parsing the double values.
@@ -66,17 +67,19 @@ public class TransactionServiceImpl implements ITransactionService {
         TransactionEntity transactionEntity = new TransactionEntity();
         transactionEntity.setTransactionId(rsaUtils.decrypt(transactionId));
         transactionEntity.setAccount(aesUtils.encrypt(rsaUtils.decrypt(account)));
-        try{
+        try {
             transactionEntity.setTime(LocalDate.parse(rsaUtils.decrypt(time), Constants.CUSTOM_DATE_FORMATTER));
-        }catch (DateTimeParseException exception){
+        } catch (DateTimeParseException exception) {
             throw new CustomException("Error parsing time value");
         }
-        try{
+
+        try {
             transactionEntity.setHave(Double.parseDouble(rsaUtils.decrypt(have)));
             transactionEntity.setIndebted(Double.parseDouble(rsaUtils.decrypt(indebted)));
-        }catch (NumberFormatException ignored ){
+        } catch (NumberFormatException ignored) {
             throw new CustomException("Error parsing double value");
         }
+        // the save method can throw exception .....
         transactionRepository.save(transactionEntity);
         return transactionEntityMapper.toDto(transactionEntity);
     }

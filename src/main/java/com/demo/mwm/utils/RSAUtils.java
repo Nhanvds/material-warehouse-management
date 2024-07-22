@@ -1,5 +1,6 @@
 package com.demo.mwm.utils;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.BadPaddingException;
@@ -12,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 @Component
+@Scope(value = "singleton")
 public class RSAUtils {
     private final KeyPair keyPair;
 

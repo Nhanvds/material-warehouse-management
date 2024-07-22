@@ -29,7 +29,7 @@ public class TransactionController {
     @Operation(description = "Create a new Transaction",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Created transaction successfully. Return transaction created successfully"),
-                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
             })
     @PostMapping("/save")
@@ -42,12 +42,12 @@ public class TransactionController {
 
     ) {
         // giả sử đã được mã hóa:
-            transactionId=rsaUtils.encrypt(transactionId);
-            account=rsaUtils.encrypt(account);
-            indebted=rsaUtils.encrypt(indebted);
-            have=rsaUtils.encrypt(have);
-            time=rsaUtils.encrypt(time);
-        //
+        transactionId = rsaUtils.encrypt(transactionId);
+        account = rsaUtils.encrypt(account);
+        indebted = rsaUtils.encrypt(indebted);
+        have = rsaUtils.encrypt(have);
+        time = rsaUtils.encrypt(time);
+        //-----------------------------
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(transactionService.createTransaction(transactionId, account, indebted, have, time));
