@@ -45,11 +45,12 @@ public class MaterialServiceImpl implements IMaterialService {
      * @param id The ID of the material entity to retrieve.
      * @return A MaterialDto object containing the details of the material and its associated supplier.
      * @throws CustomException If no active material or supplier with the provided IDs is found.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public MaterialDto getDetailMaterialById(Integer id) {
         if(Objects.isNull(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+            throw new IllegalArgumentException("Param is null");
         }
         MaterialEntity materialEntity = materialRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.material.not.found", String.valueOf(id)));
@@ -67,11 +68,12 @@ public class MaterialServiceImpl implements IMaterialService {
      * @param materialDto An object containing the new material information.
      * @return The ID of the newly created material entity.
      * @throws CustomException If a supplier with the provided ID is not found or inactive.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public MaterialDto createMaterial(MaterialDto materialDto) {
         if(Objects.isNull(materialDto)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"MaterialDto null");
+            throw new IllegalArgumentException("Param is null");
         }
         MaterialEntity materialEntity = materialEntityMapper.toEntity(materialDto);
         SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(materialDto.getSupplierId())
@@ -97,14 +99,15 @@ public class MaterialServiceImpl implements IMaterialService {
      * @param materialDto An object containing the updated material information.
      * @return MaterialDto saved
      * @throws CustomException If a material or supplier with the provided IDs is not found.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public MaterialDto updateMaterial(Integer id, MaterialDto materialDto) {
         if(Objects.isNull(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+            throw new IllegalArgumentException("Param is null");
         }
         if(Objects.isNull(materialDto)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"MaterialDto null");
+            throw new IllegalArgumentException("Param is null");
         }
         MaterialEntity materialEntity = materialRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.material.not.found", String.valueOf(id)));
@@ -122,11 +125,12 @@ public class MaterialServiceImpl implements IMaterialService {
      * Deletes a material by marking it inactive.
      * @param id The ID of the material to delete.
      * @throws CustomException If a material with the provided ID is not found.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public void deleteMaterial(Integer id) {
         if(Objects.isNull(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"id null");
+            throw new IllegalArgumentException("Param is null");
         }
         MaterialEntity materialEntity = materialRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.material.not.found", String.valueOf(id)));

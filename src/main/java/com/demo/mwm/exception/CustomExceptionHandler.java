@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.query.sqm.PathElementException;
 import org.mapstruct.ap.shaded.freemarker.template.utility.NullArgumentException;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,7 +21,7 @@ import java.util.List;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(CustomExceptionHandler.class);
 
     @ExceptionHandler(value = {CustomException.class})
     public ResponseEntity<String> handleCustomException(CustomException ex) {
@@ -33,7 +32,7 @@ public class CustomExceptionHandler {
         } catch (NoSuchMessageException exc) {
             errorMessage = ex.getMessage();
         }
-        logger.warn(errorMessage);
+        logger.info(errorMessage);
         return ResponseEntity
                 .status(ex.getErrorStatus())
                 .body(errorMessage);

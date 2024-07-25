@@ -16,10 +16,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${api.prefix}/materials")
+@RequestMapping("/materials")
 public class MaterialController {
 
     private final IMaterialService materialService;
@@ -29,20 +30,21 @@ public class MaterialController {
     }
 
 
-    @Operation(description = "create a new Material",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Created material successfully. Return the ID of the newly created material entity."),
-                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
-                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
-
-            })
-
     /**
      * create a new Material
      *
      * @param materialDto An object containing the new material information.
      * @return The ID of the newly created material entity.
      */
+    @Operation(description = "create a new Material",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Created material successfully. Return the ID of the newly created material entity."),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
+                    @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it.")
+
+            })
     @PostMapping("/save")
     public ResponseEntity<MaterialDto> createMaterial(
             @Parameter(description = "An object containing the new material information.")
@@ -72,6 +74,8 @@ public class MaterialController {
                     @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "404", description = "Unsuccessful,Material or Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
+                    @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it.")
             })
 
     @PutMapping("/{id}/update")
@@ -98,6 +102,8 @@ public class MaterialController {
                     @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
+                    @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it.")
             })
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteMaterial(
@@ -117,6 +123,8 @@ public class MaterialController {
     @Operation(description = "Retrieves the details of a material entity by its ID.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Get detail material successfully."),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
+                    @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it."),
                     @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
             })
@@ -135,6 +143,8 @@ public class MaterialController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "successfully."),
                     @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
+                    @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it."),
                     @ApiResponse(responseCode = "500", description = "Server error"),
             })
     /**

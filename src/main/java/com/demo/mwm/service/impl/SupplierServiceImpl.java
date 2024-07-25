@@ -52,12 +52,13 @@ public class SupplierServiceImpl implements ISupplierService {
      * @param id The supplier ID needs getting.
      * @return SupplierDto
      * @throws CustomException If a supplier with the provided ID is not found.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     @Transactional
     public SupplierDto getSupplierById(Integer id) {
         if(Objects.isNull(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+            throw new IllegalArgumentException("Param is null");
         }
         // call procedure
         SupplierEntity supplierEntity = supplierRepository.findSupplierByIdAndIsActiveTrue(id)
@@ -71,30 +72,18 @@ public class SupplierServiceImpl implements ISupplierService {
      *
      * @param supplierDto An object containing the information of the new supplier to be created.
      * @return The ID of the newly created supplier entity.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public SupplierDto createSupplier(SupplierDto supplierDto) {
+        if(Objects.isNull(supplierDto)){
+            throw new IllegalArgumentException("Param is null");
+        }
         SupplierEntity supplierEntity = supplierEntityMapper.toEntity(supplierDto);
         supplierRepository.save(supplierEntity);
         return supplierEntityMapper.toDto(supplierEntity);
     }
 
-    @Override
-    public SupplierDto createSupplierAES(String encryptedData) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, JsonProcessingException {
-        String decryptedData = aesUtils.decrypt(encryptedData);
-        SupplierDto supplierDto = new ObjectMapper().readValue(decryptedData, SupplierDto.class);
-        SupplierEntity supplierEntity = supplierEntityMapper.toEntity(supplierDto);
-        supplierRepository.save(supplierEntity);
-        return supplierEntityMapper.toDto(supplierEntity);
-    }
-
-    @Override
-    public SupplierDto getSupplierByIdRSA(String encryptedData) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, JsonProcessingException {
-        String decryptedData = rsaUtils.decrypt(encryptedData);
-        SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(Integer.parseInt(decryptedData))
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found","?"));
-        return supplierEntityMapper.toDto(supplierEntity);
-    }
 
 
     /**
@@ -105,14 +94,15 @@ public class SupplierServiceImpl implements ISupplierService {
      * @param id          The ID of the supplier to update.
      * @param supplierDto An object containing the updated supplier information.
      * @throws CustomException If no active supplier with the provided ID is found.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public SupplierDto updateSupplier(Integer id, SupplierDto supplierDto) {
         if(Objects.isNull(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+            throw new IllegalArgumentException("Param is null");
         }
         if(Objects.isNull(supplierDto)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Supplier null");
+            throw new IllegalArgumentException("Param is null");
         }
         SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found", String.valueOf(id)));
@@ -128,11 +118,12 @@ public class SupplierServiceImpl implements ISupplierService {
      *
      * @param id The ID of the supplier to delete.
      * @throws CustomException If a supplier with the provided ID is not found.
+     * @throws IllegalArgumentException if param is null
      */
     @Override
     public void deleteSupplier(Integer id) {
         if(Objects.isNull(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"Id null");
+            throw new IllegalArgumentException("Param is null");
         }
         SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found",String.valueOf(id)));
@@ -150,5 +141,27 @@ public class SupplierServiceImpl implements ISupplierService {
     public List<SupplierDto> getAllSupplier() {
         List<SupplierEntity> supplierEntityList = supplierRepository.getAllByIsActiveTrue();
         return supplierEntityList.stream().map(supplierEntityMapper::toDto).toList();
+    }
+
+
+
+
+
+
+    @Override
+    public SupplierDto createSupplierAES(String encryptedData) throws JsonProcessingException {
+        String decryptedData = aesUtils.decrypt(encryptedData);
+        SupplierDto supplierDto = new ObjectMapper().readValue(decryptedData, SupplierDto.class);
+        SupplierEntity supplierEntity = supplierEntityMapper.toEntity(supplierDto);
+        supplierRepository.save(supplierEntity);
+        return supplierEntityMapper.toDto(supplierEntity);
+    }
+
+    @Override
+    public SupplierDto getSupplierByIdRSA(String encryptedData) {
+        String decryptedData = rsaUtils.decrypt(encryptedData);
+        SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(Integer.parseInt(decryptedData))
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found","?"));
+        return supplierEntityMapper.toDto(supplierEntity);
     }
 }
