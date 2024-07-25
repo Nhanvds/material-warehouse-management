@@ -17,12 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,8 +54,7 @@ public class SupplierServiceImpl implements ISupplierService {
         if(Objects.isNull(id)){
             throw new IllegalArgumentException("Param is null");
         }
-        // call procedure
-        SupplierEntity supplierEntity = supplierRepository.findSupplierByIdAndIsActiveTrue(id)
+        SupplierEntity supplierEntity = supplierRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "error.supplier.not.found",String.valueOf(id)));
         return supplierEntityMapper.toDto(supplierEntity);
     }

@@ -61,7 +61,7 @@ public class AuthServiceImpl implements IAuthService {
         if (Objects.nonNull(userDto.getRoleIds())) {
             roleEntitySet = roleRepository.findAllByIds(userDto.getRoleIds());
         }else {
-            roleEntitySet = Set.of(roleRepository.findByName(AuthoritiesConstants.USER));
+            roleEntitySet = Set.of(roleRepository.findByName(AuthoritiesConstants.ROLE.USER.name()));
         }
         logger.info(roleEntitySet);
         UserEntity newUser = new UserEntity();

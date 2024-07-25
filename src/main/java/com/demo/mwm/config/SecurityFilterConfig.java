@@ -1,6 +1,7 @@
 package com.demo.mwm.config;
 
-import com.demo.mwm.utils.AuthoritiesConstants;
+import com.demo.mwm.entity.PermissionEntity;
+import com.demo.mwm.service.IPermissionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,10 +12,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpMethod.DELETE;
+
+
 import static com.demo.mwm.utils.AuthoritiesConstants.*;
 
 @Configuration
@@ -24,11 +23,15 @@ public class SecurityFilterConfig {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
+    private final IPermissionService permissionService;
 
-    public SecurityFilterConfig(AuthenticationProvider authenticationProvider, JwtAuthFilter jwtAuthFilter) {
+    public SecurityFilterConfig(AuthenticationProvider authenticationProvider, JwtAuthFilter jwtAuthFilter, IPermissionService permissionService) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthFilter = jwtAuthFilter;
+        this.permissionService = permissionService;
     }
+
+    private static final String SUFFIXES = "/**";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,19 +39,16 @@ public class SecurityFilterConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/auth/*").permitAll()
-                                .requestMatchers("/swagger-ui-custom.html/**").permitAll()
-                                .requestMatchers(GET,"/materials/get-list").hasAnyRole(ADMIN,USER)
-                                .requestMatchers(POST,"/materials/save").hasAnyAuthority(ADMIN_CREATE)
-                                .requestMatchers(DELETE,"/materials/*/delete").hasAnyAuthority(ADMIN_DELETE, ADMIN_UPDATE)
-                                .requestMatchers(GET,"/materials/*/detail").hasAnyRole(ADMIN,USER)
-                                .requestMatchers(PUT,"/materials/*/update").hasAnyAuthority(ADMIN_DELETE, ADMIN_UPDATE)
-                                .requestMatchers(GET,"/suppliers/all").hasAnyRole(ADMIN,USER)
-                                .requestMatchers(POST,"/suppliers/save").hasAnyAuthority(ADMIN_CREATE)
-                                .requestMatchers(GET,"/suppliers/*/detail").hasAnyRole(ADMIN,USER)
-                                .requestMatchers(PUT,"/suppliers/*/update").hasAnyAuthority(ADMIN_DELETE, ADMIN_UPDATE)
-                                .requestMatchers(DELETE,"/suppliers/*/delete").hasAnyAuthority(ADMIN_DELETE, ADMIN_UPDATE)
-                                .anyRequest().authenticated()
+                        req -> {
+                            for (String endpoint : WHITE_LISTED) {
+                                req.requestMatchers(endpoint + SUFFIXES).permitAll();
+                            }
+                            for (PermissionEntity permission : permissionService.getAll()) {
+                                req.requestMatchers(permission.getMethod().name(), permission.getEndpoint())
+                                        .hasAuthority(permission.getName());
+                            }
+                            req.anyRequest().authenticated();
+                        }
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

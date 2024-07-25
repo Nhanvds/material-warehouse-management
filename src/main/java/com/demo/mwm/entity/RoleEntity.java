@@ -2,13 +2,13 @@ package com.demo.mwm.entity;
 
 import com.demo.mwm.utils.AuthoritiesConstants;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +20,7 @@ public class RoleEntity extends AbstractAuditingEntity<Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Role name cannot blank")
     @Column(name = "name")
     private String name;
 
@@ -35,7 +36,7 @@ public class RoleEntity extends AbstractAuditingEntity<Integer> {
         Set<SimpleGrantedAuthority> authorities = permissions.stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getName()))
                 .collect(Collectors.toSet());
-        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ROLE_ + this.name));
+//        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ROLE_ + this.name));
         Logger logger = LogManager.getLogger();
         logger.info(Arrays.stream(authorities.toArray()).map(e->e.toString()).collect(Collectors.toList()));
         return authorities;

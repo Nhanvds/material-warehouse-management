@@ -18,14 +18,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto) {
         authService.register(userDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Created successfully");
     }
 
     @GetMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto) {
         return ResponseEntity.ok()
                 .body(authService.login(userDto));
     }

@@ -39,8 +39,8 @@ public class MaterialController {
     @Operation(description = "create a new Material",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Created material successfully. Return the ID of the newly created material entity."),
-                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
-                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Supplier not found. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
                     @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it.")
 
@@ -71,8 +71,8 @@ public class MaterialController {
     @Operation(description = "Update a material, update materialCode, materialName, materialPrice, materialQuantity, materialNote, supplierId",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Updated material successfully. Return message updated successfully"),
-                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
-                    @ApiResponse(responseCode = "404", description = "Unsuccessful,Material or Supplier not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful,Material or Supplier not found. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
                     @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it.")
@@ -99,8 +99,8 @@ public class MaterialController {
     @Operation(description = "Delete a material by marking it inactive",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Delete material successfully."),
-                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
-                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
                     @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it.")
@@ -117,15 +117,16 @@ public class MaterialController {
 
     /**
      * Retrieves the details of a material entity by its ID.
+     *
      * @param id The ID of the material entity to retrieve.
-     * @return  A MaterialDto object containing the details of the material and its associated supplier.
+     * @return A MaterialDto object containing the details of the material and its associated supplier.
      */
     @Operation(description = "Retrieves the details of a material entity by its ID.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Get detail material successfully."),
                     @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
                     @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it."),
-                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "404", description = "Unsuccessful, Material not found. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "500", description = "Server error"),
             })
     @GetMapping("/{id}/detail")
@@ -142,7 +143,7 @@ public class MaterialController {
     @Operation(description = "Retrieves a paginated list of materials. If page and size are not provided, returns all materials.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successfully."),
-                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error",content = {@Content(schema = @Schema(implementation = String.class))}),
+                    @ApiResponse(responseCode = "400", description = "Invalid. Return detailed error", content = {@Content(schema = @Schema(implementation = String.class))}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized. The request lacks valid authentication credentials."),
                     @ApiResponse(responseCode = "403", description = "Forbidden. The server understood the request but refuses to authorize it."),
                     @ApiResponse(responseCode = "500", description = "Server error"),
